@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace DNetPrac4
 {
-    class CD
+    internal class CD
     {
         public string title { get; set; }
         public string artist { get; set; }
         public List<Track> tracks { get; set; }
-
 
         public XDocument generateXML() {
             var CDXml = new XDocument();

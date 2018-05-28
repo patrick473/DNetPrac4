@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Xml.Linq;
+
 namespace DNetPrac4
 {
-    
-    class Program
+    internal class Program
     {
-        static void Main(string[] args) {
-
+        private static void Main(string[] args) {
             Track track1 = new Track {
                 artist = "BTS",
                 length = TimeSpan.FromSeconds(121),
@@ -31,27 +30,19 @@ namespace DNetPrac4
                 tracks = new List<Track> { track1, track2, track3 }
             };
 
-
             XDocument CDXml = cd1.generateXML();
             Console.WriteLine(CDXml.ToString());
 
             // PART 2 FROM HERE ON
-           
 
             // Retrieve original titles for comparing
             var origTitles = CDXml.Descendants("track").SelectMany(x => x.Descendants("title"));
             List<String> origTitleValues = new List<string>();
             Console.WriteLine("-----------------------------Titles not in previous album----------------------------");
-           
-            foreach ( var element in origTitles) {
+
+            foreach (var element in origTitles) {
                 origTitleValues.Add(element.Value);
             }
-           
-
-
-
-
-
 
             String xmlString;
             using (WebClient wc = new WebClient()) {
@@ -60,10 +51,10 @@ namespace DNetPrac4
             XDocument myXMLDoc = XDocument.Parse(xmlString);
 
             List<XElement> tracksXML = myXMLDoc.Descendants("track").ToList();
-            foreach(XElement el in tracksXML) {
+            foreach (XElement el in tracksXML) {
                 string name = el.Element("name").Value;
                 //needed to parse to int timespan not parsable from string
-                TimeSpan duration = TimeSpan.FromSeconds( Int32.Parse(el.Element("duration").Value));
+                TimeSpan duration = TimeSpan.FromSeconds(Int32.Parse(el.Element("duration").Value));
                 string artist = el.Element("artist").Element("name").Value;
                 if (!origTitleValues.Contains(name)) {
                     Console.WriteLine(el.Element("name").Value);
@@ -73,15 +64,11 @@ namespace DNetPrac4
                         title = name
                     };
                     cd1.tracks.Add(track);
-
                 }
             }
             Console.WriteLine("-----------------------------------FILLED ALBUM----------------------------------");
             Console.WriteLine(cd1.generateXML().ToString());
-        Console.Read();
+            Console.Read();
         }
-       
     }
-   
 }
-
