@@ -6,8 +6,7 @@ using System.Xml.Linq;
 
 namespace DNetPrac4
 {
-    internal class Program
-    {
+    internal class Program {
         private static void Main(string[] args) {
             Track track1 = new Track {
                 artist = "BTS",
@@ -49,15 +48,40 @@ namespace DNetPrac4
                 xmlString = wc.DownloadString(@"http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=b5cbf8dcef4c6acfc5698f8709841949&artist=BTS&album=You+Never+Walk+Alone");
             }
             XDocument myXMLDoc = XDocument.Parse(xmlString);
-
+            //get tracks
             List<XElement> tracksXML = myXMLDoc.Descendants("track").ToList();
+
+            var query =
+
+                from tr in myXMLDoc.Descendants("track")
+
+                where
+                !((from tr2 in CDXml.Descendants("track")
+                  where tr.Element("name").Value == tr2.Element("title").Value
+                    
+                  select tr2).Any())
+
+                
+                select tr.Element("name").Value
+                ;
+            foreach (String tp in query) {
+                /*Track tf = new Track {
+                    title = tr.Element("name").Value,
+
+                    artist = tr.Element("artist").Element("name").Value,
+                    length = TimeSpan.FromSeconds(Int32.Parse(tr.Element("duration").Value))
+                };*/
+                Console.WriteLine(tp);
+            }
+            /*
             foreach (XElement el in tracksXML) {
                 string name = el.Element("name").Value;
                 //needed to parse to int timespan not parsable from string
                 TimeSpan duration = TimeSpan.FromSeconds(Int32.Parse(el.Element("duration").Value));
                 string artist = el.Element("artist").Element("name").Value;
+                //compare tracks
                 if (!origTitleValues.Contains(name)) {
-                    Console.WriteLine(el.Element("name").Value);
+                   // Console.WriteLine(el.Element("name").Value);
                     Track track = new Track {
                         artist = artist,
                         length = duration,
@@ -66,9 +90,11 @@ namespace DNetPrac4
                     cd1.tracks.Add(track);
                 }
             }
+            */
             Console.WriteLine("-----------------------------------FILLED ALBUM----------------------------------");
-            Console.WriteLine(cd1.generateXML().ToString());
+            //Console.WriteLine(cd1.generateXML().ToString());
             Console.Read();
         }
+
     }
 }
