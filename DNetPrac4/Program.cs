@@ -35,13 +35,8 @@ namespace DNetPrac4
             // PART 2 FROM HERE ON
 
             // Retrieve original titles for comparing
-            var origTitles = CDXml.Descendants("track").SelectMany(x => x.Descendants("title"));
-            List<String> origTitleValues = new List<string>();
+            
             Console.WriteLine("-----------------------------Titles not in previous album----------------------------");
-
-            foreach (var element in origTitles) {
-                origTitleValues.Add(element.Value);
-            }
 
             String xmlString;
             using (WebClient wc = new WebClient()) {
@@ -49,7 +44,7 @@ namespace DNetPrac4
             }
             XDocument myXMLDoc = XDocument.Parse(xmlString);
             //get tracks
-            List<XElement> tracksXML = myXMLDoc.Descendants("track").ToList();
+           
 
             var query =
 
@@ -63,17 +58,16 @@ namespace DNetPrac4
                   select tr2).Any())
 
                 
-                select tr
-                ;
-            foreach (XElement tp in query) {
-                Track tf = new Track {
-                    title = tp.Element("name").Value,
+                select new Track {
+                    title = tr.Element("name").Value,
 
-                    artist = tp.Element("artist").Element("name").Value,
-                    length = TimeSpan.FromSeconds(Int32.Parse(tp.Element("duration").Value))
+                    artist = tr.Element("artist").Element("name").Value,
+                    length = TimeSpan.FromSeconds(Int32.Parse(tr.Element("duration").Value))
                 };
+           foreach(Track tf in query){
                 cd1.tracks.Add(tf);
                 Console.WriteLine(tf.title);
+
             }
             
             Console.WriteLine("-----------------------------------FILLED ALBUM----------------------------------");
