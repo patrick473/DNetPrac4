@@ -57,42 +57,27 @@ namespace DNetPrac4
 
                 where
                 !((from tr2 in CDXml.Descendants("track")
-                  where tr.Element("name").Value == tr2.Element("title").Value
+                  where tr.Element("name").Value == tr2.Element("title").Value &&
+                  tr.Element("artist").Element("name").Value == tr2.Element("artist").Value
                     
                   select tr2).Any())
 
                 
-                select tr.Element("name").Value
+                select tr
                 ;
-            foreach (String tp in query) {
-                /*Track tf = new Track {
-                    title = tr.Element("name").Value,
+            foreach (XElement tp in query) {
+                Track tf = new Track {
+                    title = tp.Element("name").Value,
 
-                    artist = tr.Element("artist").Element("name").Value,
-                    length = TimeSpan.FromSeconds(Int32.Parse(tr.Element("duration").Value))
-                };*/
-                Console.WriteLine(tp);
+                    artist = tp.Element("artist").Element("name").Value,
+                    length = TimeSpan.FromSeconds(Int32.Parse(tp.Element("duration").Value))
+                };
+                cd1.tracks.Add(tf);
+                Console.WriteLine(tf.title);
             }
-            /*
-            foreach (XElement el in tracksXML) {
-                string name = el.Element("name").Value;
-                //needed to parse to int timespan not parsable from string
-                TimeSpan duration = TimeSpan.FromSeconds(Int32.Parse(el.Element("duration").Value));
-                string artist = el.Element("artist").Element("name").Value;
-                //compare tracks
-                if (!origTitleValues.Contains(name)) {
-                   // Console.WriteLine(el.Element("name").Value);
-                    Track track = new Track {
-                        artist = artist,
-                        length = duration,
-                        title = name
-                    };
-                    cd1.tracks.Add(track);
-                }
-            }
-            */
+            
             Console.WriteLine("-----------------------------------FILLED ALBUM----------------------------------");
-            //Console.WriteLine(cd1.generateXML().ToString());
+            Console.WriteLine(cd1.generateXML().ToString());
             Console.Read();
         }
 
